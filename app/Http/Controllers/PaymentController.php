@@ -175,17 +175,18 @@ class PaymentController extends Controller
         }
 
         if ($channel === 'WECHAT' || $channel === 'ALIPAY') {
-            $redpayments = new Redpayments();
+            $redpayments = new Redpayments($channel);
             $response = $redpayments->query($payment_id);
-            // return response()->json(compact("response"), 200);
+
             $response = json_decode(json_encode($response));
+
             $payment_information = array(
                 'error_code' => $response->code,
                 'date_time' => $response->data->paidTime,
                 'status' => $response->data->resultCode,
-                'bill_amount' => $response->orderAmount,
-                'paid_amount' => $reponse->data->orderAmount,
-                'transaction_id' => $response->orderNo,
+                'bill_amount' => $response->data->orderAmount,
+                'paid_amount' => $response->data->orderAmount,
+                'transaction_id' => $response->data->orderNo,
             );
         }
 
