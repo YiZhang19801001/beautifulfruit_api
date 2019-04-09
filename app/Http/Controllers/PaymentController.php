@@ -105,13 +105,15 @@ class PaymentController extends Controller
         }
 
         if ($request->channel === "WECHAT" || $request->channel === "ALIPAY") {
-            $redpayments = new Redpayments();
+            $redpayments = new Redpayments($request->channel);
             $response = $redpayments->create($request);
+            // return response()->json(compact("response"), 200);
             $order_status = $response->code == 0 ? "success" : "fail";
             if ($response->code == 0) {
+
                 $data = json_decode(json_encode($response->data));
                 $approvel_url = $data->qrCode;
-                $payment_id = $data->orderNo;
+                $payment_id = $request->channel === "ALIPAY" ? $data->mchOrderNo : $request->invoice_no;
             }
 
             $testing_message = json_encode($response);
@@ -175,6 +177,7 @@ class PaymentController extends Controller
         if ($channel === 'WECHAT' || $channel === 'ALIPAY') {
             $redpayments = new Redpayments();
             $response = $redpayments->query($payment_id);
+            // return response()->json(compact("response"), 200);
             $response = json_decode(json_encode($response));
             $payment_information = array(
                 'error_code' => $response->code,

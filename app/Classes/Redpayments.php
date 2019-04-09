@@ -6,9 +6,14 @@ class Redpayments
     private $key = "";
     private $version = "";
 
-    public function __construct()
+    public function __construct($method)
     {
-        $this->key = config("redpayments.key");
+        if ($method === "WECHAT") {
+
+            $this->key = config("redpayments.wechat_key");
+        } else {
+            $this->key = config("redpayments.ali_key");
+        }
         $this->version = config("redpayments.version");
     }
 
@@ -44,7 +49,7 @@ class Redpayments
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string)));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json; Charset=UTF-8', 'Content-Length: ' . strlen($data_string)));
 
         $curl_response = curl_exec($curl);
 
