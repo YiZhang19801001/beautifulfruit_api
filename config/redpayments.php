@@ -1,9 +1,10 @@
 <?php
 return [
-    'key' => env('REDPAYMENTS_KEY', ''),
+    'wechat_key' => env('REDPAYMENTS_KEY_WECHAT', ''),
+    'ali_key' => env('REDPAYMENTS_KEY_ALI', ''),
+
     "version" => env("REDPAYMENTS_VERSION", ""),
-    "createUrl" => env("RED_PAYMENTS_CREATE_URL", "https://service.redpayments.com.au/pay/gateway/create-order"),
-    "queryUrl" => env("RED_PAYMENTS_QUERY_URL"),
+    "createUrl" => env("RED_PAYMENTS_CREATE_URL", "https: //service.redpayments.com.au/pay/gateway/create-order"),
     "test_createUrl" => "https://dev-service.redpayments.com.au/pay/gateway/create-order",
 
     "mchNo" => env("RED_PAYMENTS_mchNo", "77902"),
