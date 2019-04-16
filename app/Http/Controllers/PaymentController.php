@@ -23,7 +23,6 @@ class PaymentController extends Controller
 
     public function store(Request $request)
     {
-
         //Todo: validation
 
         //1. create order
@@ -57,7 +56,7 @@ class PaymentController extends Controller
             'store_id' => isset($request->store_id) ? $request->store_id : "",
             'customer_id' => $user->user_id,
             'fax' => isset($request->fax) ? $request->fax : "",
-            'payment_method' => isset($request->payment_method) ? $request->payment_method : "",
+            'payment_method' => isset($request->channel) ? $request->channel : "",
             'total' => isset($request->total) ? $request->total : "",
             'date_added' => $today,
             'date_modified' => $today,
