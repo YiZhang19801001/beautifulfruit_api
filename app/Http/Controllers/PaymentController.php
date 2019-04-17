@@ -136,7 +136,8 @@ class PaymentController extends Controller
         $dt = new \DateTime("now", new \DateTimeZone('Australia/Sydney'));
         $date_received = $dt->format('y-m-d h:m:s');
         $status = "";
-        $message = "can not find $pay_way";
+        $message = "can not find $pay_way" . json_encode($request->all());
+
         $result_array = array();
         if ($pay_way === 'poli') {
             $poli = new Poli();
@@ -176,7 +177,6 @@ class PaymentController extends Controller
         if ($channel === 'WECHAT' || $channel === 'ALIPAY') {
             $redpayments = new Redpayments($channel);
             $response = $redpayments->query($payment_id);
-
             $response = json_decode(json_encode($response));
 
             $payment_information = array(
