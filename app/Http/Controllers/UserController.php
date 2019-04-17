@@ -97,8 +97,9 @@ class UserController extends Controller
             $user->email = isset($request->email) ? $request->email : '';
 
             $user->save();
+            $user['permissions'] = $user->permissions()->get();
 
-            $response = ['success' => true, 'data' => ['username' => $user->username, 'id' => $user->user_id, 'email' => $request->email, 'api_token' => $token]];
+            $response = ['success' => true, 'data' => $user];
         } else {
             $response = ['success' => false, 'data' => 'Couldnt register user'];
         }
