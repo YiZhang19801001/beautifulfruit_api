@@ -34,7 +34,7 @@ class Poli
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', "Authorization: Basic " . $auth));
 
         $curl_response = curl_exec($ch);
-// Check the return value of curl_exec(), too
+        // Check the return value of curl_exec(), too
         if ($curl_response === false) {
             throw new \Exception(curl_error($ch), curl_errno($ch));
         }

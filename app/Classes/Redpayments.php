@@ -29,7 +29,7 @@ class Redpayments
             "item" => $request->input("item", config("redpayments.items")),
             "mchNo" => config("redpayments.mchNo"),
             "mchOrderNo" => $request->invoice_no,
-            "notifyUrl" => config("app.paymentNotifycationUrl" . "/$request->channel"),
+            "notifyUrl" => config("app.paymentNotifycationUrl") . "/$request->channel",
             "params" => $request->input("params", config("redpayments.params")),
             "payWay" => $request->input("payway", config("redpayments.payWay")),
             "quantity" => $request->quantity,
