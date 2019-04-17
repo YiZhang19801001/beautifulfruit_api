@@ -38,7 +38,9 @@ class Poli
         if ($curl_response === false) {
             throw new \Exception(curl_error($ch), curl_errno($ch));
         }
-        return json_decode($curl_response);
+        $responseBody = json_decode($curl_response);
+
+        return $responseBody;
     }
 
     public function query($token)

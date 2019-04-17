@@ -169,7 +169,7 @@ class ProductController extends Controller
         $product->quantity = $request->product->quantity;
         $product->sort_order = $request->product->sort_order;
         if ($request->isGroupon) {
-            $product->stock_status_id = $request->product->order_status_id;
+            $product->stock_status_id = $request->product->stock_status_id;
         }
 
         //How To:: upload image React && Laravel
@@ -244,6 +244,10 @@ class ProductController extends Controller
         # groupon product add discounts
         if ($request->isGroupon) {
             $this->helper->createDiscount($request, $product_id);
+        }
+
+        if (!$request->isGroupon) {
+            $this->helper->removeDiscount($request->discountId);
         }
 
         // 5. delete options - remove product option which product_option_id not contains in $new_product_opiton_ids

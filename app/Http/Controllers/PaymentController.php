@@ -97,7 +97,7 @@ class PaymentController extends Controller
         if ($request->channel === "POLI") {
             $poli = new Poli();
             $response = $poli->create($request);
-
+            // return response()->json(compact('response'), 200);
             $order_status = $response->Success ? "success" : "fail";
             $approvel_url = $response->NavigateURL;
             $payment_id = $response->TransactionRefNo;
@@ -137,6 +137,7 @@ class PaymentController extends Controller
         $date_received = $dt->format('y-m-d h:m:s');
         $status = "";
         $message = "can not find $pay_way" . json_encode($request->all());
+        PaymentNotify::create(compact("date_received", "message", "pay_way", 'status'));
 
         $result_array = array();
         if ($pay_way === 'poli') {
@@ -157,6 +158,7 @@ class PaymentController extends Controller
 
     public function query(Request $request)
     {
+
         $channel = $request->channel;
         $payment_id = $request->payment_id;
         $payment_information = array();
@@ -178,15 +180,17 @@ class PaymentController extends Controller
             $redpayments = new Redpayments($channel);
             $response = $redpayments->query($payment_id);
             $response = json_decode(json_encode($response));
-
-            $payment_information = array(
-                'error_code' => $response->code,
-                'date_time' => $response->data->paidTime,
-                'status' => $response->data->resultCode,
-                'bill_amount' => $response->data->orderAmount,
-                'paid_amount' => $response->data->orderAmount,
-                'transaction_id' => $response->data->orderNo,
-            );
+            // return response()->json(compact('response'), 200);
+            if ($response && $response->message === 'success') {
+                $payment_information = array(
+                    'error_code' => $response->code,
+                    'date_time' => $response->data->paidTime,
+                    'status' => $response->data->resultCode,
+                    'bill_amount' => $response->data->orderAmount,
+                    'paid_amount' => $response->data->orderAmount,
+                    'transaction_id' => $response->data->orderNo,
+                );
+            }
         }
 
         if ($channel === 'paypal') {

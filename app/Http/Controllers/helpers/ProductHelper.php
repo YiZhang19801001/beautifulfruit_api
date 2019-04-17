@@ -138,15 +138,25 @@ class ProductHelper
     public function getSingleProduct($language_id, $product_id)
     {
         $responseData = array();
-//1. fetch product
+        //1. fetch product
         $product = Product::find($product_id);
         $product->image = url('/') . $product->image;
+        # add discount information
+        $discountInfo = self::makeDiscountInfo($product, 2);
+        if ($discountInfo['status']) {
+            $product['discountId'] = $discountInfo['discountId'];
+
+        }
+        $product["discountPrice"] = $discountInfo["price"];
+        $product["isDiscount"] = $discountInfo["status"];
+        $product["discountQuantity"] = $discountInfo["quantity"];
+
         $responseData['product'] = $product;
 
-//2. add details
+        //2. add details
         //2.1 descriptions
         $responseData['descriptions'] = $product->descriptions()->get();
-//2.2 category
+        //2.2 category
 
         $category = Category::find(ProductToCategory::where("product_id", $product_id)->first()->category_id);
         $categoryDescription = $category->descriptions()->where("language_id", $language_id)->first();
@@ -155,7 +165,7 @@ class ProductHelper
         }
         $category["name"] = $categoryDescription->name;
         $responseData['category'] = $category;
-//2.3 options
+        //2.3 options
         $responseData['options'] = $product->options()->get();
         foreach ($responseData['options'] as $value) {
             $valueDescription = $value->optionDescriptions()->where("language_id", $language_id)->first();
@@ -256,6 +266,7 @@ class ProductHelper
                 ->orderBy("priority", "desc")
                 ->first();
             return array(
+                "discountId" => $result->product_discount_id,
                 "price" => $result->price,
                 "quantity" => $result->quantity,
                 "status" => true,
@@ -268,14 +279,29 @@ class ProductHelper
     public function createDiscount($request, $product_id)
     {
         $product = json_decode(json_encode($request->product));
-        ProductDiscount::create([
-            'product_id' => $product_id,
-            'quantity' => $product->stock_status_id,
-            'price' => $product->discountPrice,
-            'date_start' => isset($product->date_start) ? $product->date_start : '1900-2-2',
-            'date_end' => isset($product->date_end) ? $product->date_end : '2200-2-2',
-        ]);
+        if ($request->discountId) {
+            $discount = ProductDiscount::find($request->discountId);
 
+            $discount->quantity = $product->stock_status_id;
+            $discount->price = $product->discountPrice;
+            $discount->save();
+        } else {
+            ProductDiscount::create([
+                'product_id' => $product_id,
+                'quantity' => $product->stock_status_id,
+                'price' => $product->discountPrice,
+                'date_start' => isset($product->date_start) ? $product->date_start : '1900-2-2',
+                'date_end' => isset($product->date_end) ? $product->date_end : '2200-2-2',
+            ]);
+
+        }
+
+    }
+
+    public function removeDiscount($id)
+    {
+        $discount = ProductDiscount::find($id);
+        $discount->delete();
     }
 
 }
