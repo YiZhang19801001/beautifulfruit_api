@@ -89,3 +89,5 @@ Route::get("payment", "PaymentController@query");
 Route::post('payments/{pay_way}', 'PaymentController@notify');
 Route::delete('payments', 'PaymentController@cancel');
 Route::get("payment/fetchCanceledOrder", "PaymentController@fetchCanceledOrder");
+
+Route::apiResources(['password' => 'PasswordController']);
